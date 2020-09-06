@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Neck Tool</title>
+    <link href="style.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div id="main-container">
+      <!-- Guitar Neck Tool -->
+      <div id="app">
+        <table>
+          <tr v-for="string in 6">
+            <td v-for="fret in 15"><span v-html="guitString" v-bind:value="'s'+string+'f'+fret"></span></td>
+          </tr>
+        </table>
+
+        <br><br>
+        <table>
+          <tr v-for="string in 6">
+            <td v-for="fret in 15"><span v-html="guitNote" v-bind:value="'s'+string+'f'+fret"></span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <br><br>
+    <table id="test">
+      <tr>
+        <td>
+          <svg>
+            <line x1="0" y1="50%" x2="100%" y2="50%" />
+            <circle cx="50%" cy="50%" r="14px" />
+          </svg>
+        </td>
+      </tr>
+    </table>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="script.js"></script>
+
+  </body>
+</html>
