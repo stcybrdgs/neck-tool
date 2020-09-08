@@ -10,40 +10,51 @@
   <body>
 
     <div id="main-container">
+
       <!-- Guitar Neck Tool -->
       <div id="app">
-        <table>
+        <table id="neck">
           <tr v-for="string in 6">
+            <!-- use the default tuning to derive the note name for each open string -->
+            <td id="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
             <td v-for="fret in 15">
-              <span v-html="guitString" v-bind:value="'s'+string+'f'+fret"></span>
+              <!-- use the open string as the starting value to compute the chromScale value (note index) -->
+              <span v-html="guitString"
+                    v-bind:name="'s'+string+'f'+fret"
+                    v-bind:value="tuning[string-1] + fret > 12 ? tuning[string-1] + fret - 12 : tuning[string-1] + fret"
+              ></span>
             </td>
           </tr>
         </table>
+      </div>
 
-        <!-- TEST TABLE : CIRCLES-->
-        <br><br>
-        <table>
+      <!-- TEST TABLE : CIRCLES-->
+      <br><br>
+      <div id="app2">
+        <table id="neck">
           <tr v-for="string in 6">
             <td v-for="fret in 15"><span v-html="guitNote" v-bind:value="'s'+string+'f'+fret"></span></td>
           </tr>
         </table>
       </div>
 
-      <!-- TEST TABLE : C MAJOR -->
+      <!-- TEST TABLE : C MAJOR
+      -->
 
-    </div>
+      <!-- TEST FRET -->
+      <br><br>
+      <table id="test">
+        <tr>
+          <td>
+            <svg>
+              <line x1="0" y1="50%" x2="100%" y2="50%" />
+              <circle cx="50%" cy="50%" r="14px" />
+            </svg>
+          </td>
+        </tr>
+      </table>
 
-    <br><br>
-    <table id="test">
-      <tr>
-        <td>
-          <svg>
-            <line x1="0" y1="50%" x2="100%" y2="50%" />
-            <circle cx="50%" cy="50%" r="14px" />
-          </svg>
-        </td>
-      </tr>
-    </table>
+  </div> <!-- end main container -->
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
