@@ -14,10 +14,13 @@
       <div id="app">
         <table>
           <tr v-for="string in 6">
-            <td v-for="fret in 15"><span v-html="guitString" v-bind:value="'s'+string+'f'+fret"></span></td>
+            <td v-for="fret in 15">
+              <span v-html="guitString" v-bind:value="'s'+string+'f'+fret"></span>
+            </td>
           </tr>
         </table>
 
+        <!-- TEST TABLE : CIRCLES-->
         <br><br>
         <table>
           <tr v-for="string in 6">
@@ -25,6 +28,9 @@
           </tr>
         </table>
       </div>
+
+      <!-- TEST TABLE : C MAJOR -->
+
     </div>
 
     <br><br>
