@@ -11,10 +11,10 @@ var app = new Vue({
 		chromScale: [0,0,0,0,0,0,0,0,0,0,0,0],  // default status of all notes is off=0
 		chromNotes: ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'],
 		currScale: [],
-
 	},
   computations: {},
-  methods: {}
+  methods: {
+	}
 });
 
 var app2 = new Vue({
@@ -26,16 +26,12 @@ var app2 = new Vue({
 		chromScale: [0,0,0,0,0,0,0,0,0,0,0,0],  // default status of all notes is off=0
 		chromNotes: ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'],
 		fatString: false,  // stroke-width = 2 for strings 1 to 3, else stroke-width = 3
+
 	},
   computations: {},
-  methods: {}
+  methods: {
+		getCurrScale: function(){
+
+		}
+	}
 });
-
-var cMajor = ['C','D','E','F','G','A','B']
-var currScale = function(){
-	var scale = [];
-	for( note of cMajor ){
-
-	};
-	return scale;
-}();

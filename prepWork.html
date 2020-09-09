@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <title>Neck Tool</title>
+</head>
+
+<body>
+
+  <div id="main-container">
+
+    <!-- Guitar Neck Tool -->
+    <div id="app">
+      <table class="neck">
+        <tr v-for="string in 6">
+          <!-- use the default tuning to derive the note name for each open string -->
+          <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
+          <td v-for="fret in 15">
+            <div  style="display:inline;"
+                 v-bind:name="'s'+string+'f'+fret"
+                 v-bind:value="(tuning[string-1] + fret)"
+                 >
+              <!-- use the open string as the starting value to compute the chromScale value (note index) -->
+              <span v-html="guitString"
+                    v-bind:name="'s'+string+'f'+fret"
+                    ></span>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- add ons -->
+      <p>C Major: &nbsp;&nbsp;<span v-text="textAreaMsg"></span></p>
+      <br>
+      <button type="text" v-on:click="showCurrScale">Show Scale</button>
+
+      <!-- test neck -->
+      <br><br><hr><br><br>
+      <table class="neck">
+        <tr v-for="string in 6">
+          <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
+          <td v-for="fret in 15">
+            <div  class="note-container"
+                 v-bind:id="'s'+string+'f'+fret"
+                 v-bind:value="calculateNote(string, fret)"
+                 v-bind:name="currNoteName">
+              <span v-if="chromScale[currNoteValue - 1] == 0" v-html="guitString"></span>
+              <span v-if="chromScale[currNoteValue - 1] == 1" v-html="guitNote"></span>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- test neck -->
+      <br><br><hr><br><br>
+      <table class="neck">
+        <tr v-for="string in 6">
+          <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
+          <td v-for="fret in 15">
+            <div  class="note-container"
+                 v-bind:id="'s'+string+'f'+fret"
+                 v-bind:value="calculateNote(string, fret)"
+                 v-bind:name="currNoteName">
+              <span>
+                {{ currNoteValue }}
+              </span>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+    </div> <!-- end app -->
+  </div> <!-- end main container -->
+
+  <script>
+    /*  --------------------------------------------------------
+        GUITAR NECK TOOL
+        ------------------------------------------------------------*/
+    var app = new Vue({
+      el: "#app",
+      data: {
+        guitString: "<svg height='100%' width='100%'><line x1='0' y1='50%' x2='100%' y2='50%' /></svg>",
+        guitNote: 	"<svg height='100%' width='100%'><line x1='0' y1='50%' x2='100%' y2='50%' /><circle cx='50%' cy='50%' r='15px' /></svg>",
+        fatString: false,  // stroke-width = 2 for strings 1 to 3, else stroke-width = 3
+        tuning: [5,12,8,3,10,5],
+        chromScale: [0,0,0,0,0,0,0,0,0,0,0,0],  // default status of all notes is off=0
+        chromNotes: ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'],
+        currScale: [],
+        currNoteName: '',
+        currNoteValue: 0,
+        cMajor: ['C','D','E','F','G','A','B'],
+        textAreaMsg: "sasdf",
+      },
+      computations: {},
+      methods: {
+        calculateNote: function(string, fret){
+          this.currNoteValue =
+            (this.tuning[ string - 1 ] + fret) > 24 ?
+            (this.tuning[ string - 1 ] + fret) - 24 :
+            (this.tuning[ string - 1 ] + fret) > 12 ?
+            (this.tuning[ string - 1 ] + fret) -12:
+            (this.tuning[ string - 1 ] + fret);
+          this.currNoteName = this.chromNotes[this.currNoteValue - 1];
+    			return this.currNoteValue;
+        },
+        showCurrScale: function(){
+          this.currScale = [];
+          for( var i in this.chromScale ){
+            this.chromScale[i] = 0 ;
+          }
+          for( var note of this.cMajor ){
+            this.currScale.push(this.chromNotes.indexOf(note));
+            this.chromScale[this.chromNotes.indexOf(note)] = 1;
+          }
+          this.textAreaMsg = this.currScale.toString();
+        }
+      }
+    });
+
+  </script>
+
+  </body>
+
+</html>
