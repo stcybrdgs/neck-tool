@@ -1,138 +1,212 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
-<head>
-  <meta charset="utf-8">
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <title>Neck Tool</title>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Neck Tool</title>
 
-<body>
-
-  <div id="main-container">
-
-    <!-- Guitar Neck Tool -->
-    <div id="app">
-      <table class="neck">
-        <tr v-for="string in 6">
-          <!-- use the default tuning to derive the note name for each open string -->
-          <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
-          <td v-for="fret in 15">
-            <div  style="display:inline;"
-                 v-bind:name="'s'+string+'f'+fret"
-                 v-bind:value="(tuning[string-1] + fret)"
-                 >
-              <!-- use the open string as the starting value to compute the chromScale value (note index) -->
-              <span v-html="guitString"
-                    v-bind:name="'s'+string+'f'+fret"
-                    ></span>
-            </div>
-          </td>
-        </tr>
-      </table>
-
-      <!-- add ons -->
-      <p>C Major: &nbsp;&nbsp;<span v-text="textAreaMsg"></span></p>
-      <br>
-      <button type="text" v-on:click="showCurrScale">Show Scale</button>
-
-      <!-- test neck -->
-      <br><br><hr><br><br>
-      <table class="neck">
-        <tr v-for="string in 6">
-          <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
-          <td v-for="fret in 15">
-            <div  class="note-container"
-                 v-bind:id="'s'+string+'f'+fret"
-                 v-bind:value="calculateNote(string, fret)"
-                 v-bind:name="currNoteName">
-              <span v-if="chromScale[currNoteValue - 1] == 0" v-html="guitString"></span>
-              <span v-if="chromScale[currNoteValue - 1] == 1" v-html="guitNote"></span>
-            </div>
-          </td>
-        </tr>
-      </table>
-
-      <!-- test neck -->
-      <br><br><hr><br><br>
-      <table class="neck">
-        <tr v-for="string in 6">
-          <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
-          <td v-for="fret in 15">
-            <div  class="note-container"
-                 v-bind:id="'s'+string+'f'+fret"
-                 v-bind:value="calculateNote(string, fret)"
-                 v-bind:name="currNoteName">
-              <span>
-                {{ currNoteValue }}
-              </span>
-            </div>
-          </td>
-        </tr>
-      </table>
-
-    </div> <!-- end app -->
-  </div> <!-- end main container -->
-
-  <script>
-    /*  --------------------------------------------------------
-        GUITAR NECK TOOL
-        ------------------------------------------------------------*/
-    var app = new Vue({
-      el: "#app",
-      data: {
-        guitString: "<svg height='100%' width='100%'><line x1='0' y1='50%' x2='100%' y2='50%' /></svg>",
-        guitNote: 	"<svg height='100%' width='100%'><line x1='0' y1='50%' x2='100%' y2='50%' /><circle cx='50%' cy='50%' r='15px' /></svg>",
-        fatString: false,  // stroke-width = 2 for strings 1 to 3, else stroke-width = 3
-        tuning: [5,12,8,3,10,5],
-        chromScale: [0,0,0,0,0,0,0,0,0,0,0,0],  // default status of all notes is off=0
-        chromNotes: ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'],
-        currScale: [],
-        currNoteName: '',
-        currNoteValue: 0,
-        cMajor: ['C','D','E','F','G','A','B'],
-        textAreaMsg: "sasdf",
-        // adding new data
-        scales: {
-        	major: [],  // 1,2,3,4,5,6,7 == 0,2,4,5,7,9,11
-          melodicMinor: [],  // 1,2,b3,4,5,6,7 == 0,2,3,5,7,9,11
-          harmonicMinor: [],  // 1,2,b3,4,5,b6,7 == 0,2,3,5,7,8,11
-          harmonicMajor: [],  // 1,2,3,4,5,b6,7 == 0,2,4,5,7,8,11
-          wholeTone: [],  //
-          diminished: [],  //
-          augmented: [],  // 1,#2,3,5,b6,7
-          majorPentatonic: [],  // 1,2,3,5,6
-          minorPentatonic: [],  // 1,b3,4,5,b7
-          blues: []  // 1,b3,4,#4,5,b7
-        }        
-      },
-      computed: {},
-      methods: {
-        calculateNote: function(string, fret){
-          this.currNoteValue =
-            (this.tuning[ string - 1 ] + fret) > 24 ?
-            (this.tuning[ string - 1 ] + fret) - 24 :
-            (this.tuning[ string - 1 ] + fret) > 12 ?
-            (this.tuning[ string - 1 ] + fret) -12:
-            (this.tuning[ string - 1 ] + fret);
-          this.currNoteName = this.chromNotes[this.currNoteValue - 1];
-    			return this.currNoteValue;
-        },
-        showCurrScale: function(){
-          this.currScale = [];
-          for( var i in this.chromScale ){
-            this.chromScale[i] = 0 ;
-          }
-          for( var note of this.cMajor ){
-            this.currScale.push(this.chromNotes.indexOf(note));
-            this.chromScale[this.chromNotes.indexOf(note)] = 1;
-          }
-          this.textAreaMsg = this.currScale.toString();
-        }
+    <style>
+      /*  -----------------------------------------------------------------
+      GUITAR NECK TOOL
+      The guitar neck tool is comprised of an html table container and
+      each <td> cell contains an svg graphic, which is either
+      - a string without a note
+      - a string with a note
+      ---------------------------------------------------------------------*/
+      /* neck styles */
+      #app,
+      #app2{
+        margin: 20px;
+        padding: 2px;
       }
-    });
+      .note-container{
+        display: inline;
+      }
+      .neck{
+        border: 1px solid rgb(218,218,218);
+        border-right: 1px solid rgb(188,188,188);
+        border-left: 0;
+      }
+      .open-note{
+        padding-right: 20px;
+        border-right: 12px solid gray;
+        border-top: 0;
+        font-family: Arial, 'sans-serif';
+        color: rgb(138,138,138);
+      }
 
-  </script>
+      /* guitString styles*/
+      svg{
+        display: block;
+        border-right: 2px solid rgb(188,188,188);
+      }
+
+      line{
+        stroke: rgb(250,160,20);
+        stroke-width: 2;
+      }
+
+      table{
+        border-collapse: collapse;
+        width: 100%;
+      }
+      td{
+        height: 36px;
+        padding: 0;
+      }
+
+      /* guitNote styles*/
+      circle{
+        stroke: rgb(188,188,188);
+        stroke-width: 2;
+        fill: rgb(255,255,255);
+      }
+
+      /* test */
+      #test{
+        width: 100px;
+        border-collapse: collapse;
+      }
+      #test td{
+        height: 36px;
+        padding: 0;
+      }
+      #test svg{
+        display: block;
+        height: 36px;
+        width: 100%;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div id="main-container">
+
+      <!-- Guitar Neck Tool -->
+      <div id="app">
+        <table class="neck">
+          <tr v-for="string in 6">
+            <!-- use the default tuning to derive the note name for each open string -->
+            <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
+            <td v-for="fret in 15">
+              <div  style="display:inline;"
+                   v-bind:name="'s'+string+'f'+fret"
+                   v-bind:value="(tuning[string-1] + fret)"
+                   >
+                <!-- use the open string as the starting value to compute the chromScale value (note index) -->
+                <span v-html="guitString"
+                      v-bind:name="'s'+string+'f'+fret"
+                      ></span>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <!-- add ons -->
+        <p>C Major: &nbsp;&nbsp;<span v-text="textAreaMsg"></span></p>
+        <br>
+        <button type="text" v-on:click="showCurrScale">Show Scale</button>
+
+        <!-- test neck -->
+        <br><br><hr><br><br>
+        <table class="neck">
+          <tr v-for="string in 6">
+            <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
+            <td v-for="fret in 15">
+              <div  class="note-container"
+                   v-bind:id="'s'+string+'f'+fret"
+                   v-bind:value="calculateNote(string, fret)"
+                   v-bind:name="currNoteName">
+                <span v-if="chromScale[currNoteValue - 1] == 0" v-html="guitString"></span>
+                <span v-if="chromScale[currNoteValue - 1] == 1" v-html="guitNote"></span>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <!-- test neck -->
+        <br><br><hr><br><br>
+        <table class="neck">
+          <tr v-for="string in 6">
+            <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
+            <td v-for="fret in 15">
+              <div  class="note-container"
+                   v-bind:id="'s'+string+'f'+fret"
+                   v-bind:value="calculateNote(string, fret)"
+                   v-bind:name="currNoteName">
+                <span>
+                  {{ currNoteValue }}
+                </span>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+      </div> <!-- end app -->
+    </div> <!-- end main container -->
+
+    <script>
+      /*  --------------------------------------------------------
+          GUITAR NECK TOOL
+          ------------------------------------------------------------*/
+      var app = new Vue({
+        el: "#app",
+        data: {
+          guitString: "<svg height='100%' width='100%'><line x1='0' y1='50%' x2='100%' y2='50%' /></svg>",
+          guitNote: 	"<svg height='100%' width='100%'><line x1='0' y1='50%' x2='100%' y2='50%' /><circle cx='50%' cy='50%' r='15px' /></svg>",
+          fatString: false,  // stroke-width = 2 for strings 1 to 3, else stroke-width = 3
+          tuning: [5,12,8,3,10,5],
+          chromScale: [0,0,0,0,0,0,0,0,0,0,0,0],  // default status of all notes is off=0
+          chromNotes: ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'],
+          currScale: [],
+          currNoteName: '',
+          currNoteValue: 0,
+          cMajor: ['C','D','E','F','G','A','B'],
+          textAreaMsg: "sasdf",
+          // adding new data
+          scales: {
+          	major: [],  // 1,2,3,4,5,6,7 == 0,2,4,5,7,9,11
+            melodicMinor: [],  // 1,2,b3,4,5,6,7 == 0,2,3,5,7,9,11
+            harmonicMinor: [],  // 1,2,b3,4,5,b6,7 == 0,2,3,5,7,8,11
+            harmonicMajor: [],  // 1,2,3,4,5,b6,7 == 0,2,4,5,7,8,11
+            wholeTone: [],  //
+            diminished: [],  //
+            augmented: [],  // 1,#2,3,5,b6,7
+            majorPentatonic: [],  // 1,2,3,5,6
+            minorPentatonic: [],  // 1,b3,4,5,b7
+            blues: []  // 1,b3,4,#4,5,b7
+          }
+        },
+        computed: {},
+        methods: {
+          calculateNote: function(string, fret){
+            this.currNoteValue =
+              (this.tuning[ string - 1 ] + fret) > 24 ?
+              (this.tuning[ string - 1 ] + fret) - 24 :
+              (this.tuning[ string - 1 ] + fret) > 12 ?
+              (this.tuning[ string - 1 ] + fret) -12:
+              (this.tuning[ string - 1 ] + fret);
+            this.currNoteName = this.chromNotes[this.currNoteValue - 1];
+      			return this.currNoteValue;
+          },
+          showCurrScale: function(){
+            this.currScale = [];
+            for( var i in this.chromScale ){
+              this.chromScale[i] = 0 ;
+            }
+            for( var note of this.cMajor ){
+              this.currScale.push(this.chromNotes.indexOf(note));
+              this.chromScale[this.chromNotes.indexOf(note)] = 1;
+            }
+            this.textAreaMsg = this.currScale.toString();
+          }
+        }
+      });
+
+    </script>
 
   </body>
 
