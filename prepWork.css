@@ -1,0 +1,70 @@
+/*  -----------------------------------------------------------------
+GUITAR NECK TOOL
+The guitar neck tool is comprised of an html table container and
+each <td> cell contains an svg graphic, which is either
+- a string without a note
+- a string with a note
+---------------------------------------------------------------------*/
+/* neck styles */
+#app,
+#app2{
+  margin: 20px;
+  padding: 2px;
+}
+.note-container{
+  display: inline;
+}
+.neck{
+  border: 1px solid rgb(218,218,218);
+  border-right: 1px solid rgb(188,188,188);
+  border-left: 0;
+}
+.open-note{
+  padding-right: 20px;
+  border-right: 12px solid gray;
+  border-top: 0;
+  font-family: Arial, 'sans-serif';
+  color: rgb(138,138,138);
+}
+
+/* guitString styles*/
+svg{
+  display: block;
+  border-right: 2px solid rgb(188,188,188);
+}
+
+line{
+  stroke: rgb(250,160,20);
+  stroke-width: 2;
+}
+
+table{
+  border-collapse: collapse;
+  width: 100%;
+}
+td{
+  height: 36px;
+  padding: 0;
+}
+
+/* guitNote styles*/
+circle{
+  stroke: rgb(188,188,188);
+  stroke-width: 2;
+  fill: rgb(255,255,255);
+}
+
+/* test */
+#test{
+  width: 100px;
+  border-collapse: collapse;
+}
+#test td{
+  height: 36px;
+  padding: 0;
+}
+#test svg{
+  display: block;
+  height: 36px;
+  width: 100%;
+}
