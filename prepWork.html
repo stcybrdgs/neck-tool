@@ -3,7 +3,9 @@
 
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="scaleLibrary.js"></script>
     <title>Neck Tool</title>
     <link rel="stylesheet" href="prepWork.css">
     <style>
@@ -20,30 +22,56 @@
         <table class="neck">
           <tr v-for="string in 6">
             <!-- use the default tuning to derive the note name for each open string -->
-            <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
+            <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] ] }}</td>
             <td v-for="fret in 15">
               <div  class="note-container"
-                   v-bind:id="'s'+string+'f'+fret"
-                   v-bind:value="calculateNote(string, fret)"
-                   v-bind:name="currNoteName">
-                <!-- use the open string as start val to compute the chromScale value (note index) -->
-                <span v-if="chromScale[currNoteValue - 1] == 0" v-html="guitString"></span>
-                <span v-if="chromScale[currNoteValue - 1] == 1" v-html="guitNote"></span>
+                    v-bind:id="'s'+string+'f'+fret"
+                    v-bind:value="calculateNote(string, fret)"
+                    v-bind:name="currNoteName">
+                <!-- use the open string as start val to compute the chromVals value (note index) -->
+                <span v-if="chromVals[currNoteValue] == 0" v-html="guitString"></span>
+                <span v-if="chromVals[currNoteValue] == 1" v-html="guitNote"></span>
               </div>
             </td>
           </tr>
         </table>
 
-        <!-- add ons -->
-        <p>C Major: &nbsp;&nbsp;<span v-text="textAreaMsg"></span></p>
+        <!-- Scale Select -->
         <br>
-        <button type="text" v-on:click="showCurrScale">Show Scale</button>
+        <div style="display:inline-block;">
+          <!-- Root drop menu -->
+          <label for="scale-root">Root:</label>
+          <select class="custom-select custom-select-sm" id="scale-root" v-model="currRoot">
+            <option v-for="note in chromNotes">{{ note }}</option>
+          </select>
 
+          <!-- Scale drop menu -->
+          <label for="scale-library">Scale:</label>
+          <select class="custom-select custom-select-sm" id="scale-library" v-model="currScale">
+            <option v-for="(value, key) in scaleLibrary" :value="key">{{ value.name }}</option>
+          </select>
+
+          <!-- Mode drop menu -->
+          <label for="scale-mode">Mode:</label>
+          <select class="custom-select custom-select-sm" id="scale-mode" v-model="currMode">
+            <option></option>
+          </select>
+
+        </div>
+
+        <p>
+          <span>{{ currRoot }}</span>
+          <span>{{ currScale }}</span
+        </p>
+        <br>
+
+        <button class="btn btn-sm btn-outline-primary" type="text" v-on:click="showScale">Show Scale</button>
+        <button class="btn btn-sm btn-outline-primary" type="text" v-on:click="showGb">Gb</button>
         <!-- test neck -->
         <br><br>
         <table class="neck">
           <tr v-for="string in 6">
-            <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] - 1 ] }}</td>
+            <td class="open-note">{{ chromNotes[ tuning[ string - 1 ] ] }}</td>
             <td v-for="fret in 15">
               <div  class="note-container"
                    v-bind:id="'s'+string+'f'+fret"
@@ -62,5 +90,6 @@
 
     <!-- import Vue.js app logic -->
     <script src="prepWork.js"></script>
+
   </body>
 </html>
