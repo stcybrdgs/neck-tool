@@ -21,10 +21,20 @@ each <td> cell contains an svg graphic, which is either
 }
 .open-note{
   padding-right: 20px;
+  padding-left: 20px;
   border-right: 12px solid gray;
   border-top: 0;
   font-family: Arial, 'sans-serif';
   color: rgb(138,138,138);
+}
+.fret:hover,
+.open-note:hover{
+  cursor: default;
+  background: rgb(240,250,255);
+}
+.fret:active,
+.open-note:active{
+  background: rgb(235,240,245);
 }
 
 /* guitString styles*/

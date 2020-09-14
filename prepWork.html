@@ -8,9 +8,6 @@
     <script src="scaleLibrary.js"></script>
     <title>Neck Tool</title>
     <link rel="stylesheet" href="prepWork.css">
-    <style>
-    </style>
-
   </head>
 
   <body>
@@ -28,9 +25,11 @@
                     v-bind:id="'s'+string+'f'+fret"
                     v-bind:value="calculateNote(string, fret)"
                     v-bind:name="currNoteName">
-                <!-- use the open string as start val to compute the chromVals value (note index) -->
-                <span v-if="chromVals[currNoteValue] == 0" v-html="guitString"></span>
-                <span v-if="chromVals[currNoteValue] == 1" v-html="guitNote"></span>
+                <!-- if radius == 0, note is off, if radius == 15, note is on -->
+                <svg height="100%" width="100%" class="fret" @click="toggleNote">
+                  <line x1="0" y1="50%" x2="100%" y2="50%" />
+                  <circle cx="50%" cy="50%" v-bind:r="chromVals[currNoteValue]" />
+                </svg>
               </div>
             </td>
           </tr>
@@ -66,7 +65,7 @@
         <br>
 
         <button class="btn btn-sm btn-outline-primary" type="text" v-on:click="showScale">Show Scale</button>
-        <button class="btn btn-sm btn-outline-primary" type="text" v-on:click="showGb">Gb</button>
+
         <!-- test neck -->
         <br><br>
         <table class="neck">

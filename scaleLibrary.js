@@ -42,7 +42,7 @@ var scaleLibrary = {
   minorPentatonic: {
     // 1,b3,4,5,b7 == 0,3,5,7,8
     name: 'Minor Pentatonic',
-    spelling: [0,3,5,7,8],
+    spelling: [0,3,5,7,10],
   },
   blues: {
     // 1,b3,4,#4,5,b7 == 0,3,5,6,7,10
